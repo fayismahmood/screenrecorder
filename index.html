@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    asdfsdf
+    <canvas></canvas>
+    <button>Start</button>
+    <video></video>
+    <script>
+      let btn = document.querySelector("button");
+      let v = document.querySelector("video");
+
+      btn.onclick = () => {
+        navigator.mediaDevices
+          .getDisplayMedia({
+            audio: false,
+            video: { frameRate: { ideal: 530, max: 555 } },
+          })
+          .then(function (stream) {
+            console.log(stream);
+            v.srcObject = stream;
+            let dd = new MediaRecorder(stream, { mimeType: "video/webm" });
+
+            let ch = [];
+            dd.ondataavailable = (e) => {
+              ch.push(e.data);
+              console.log(ch);
+            };
+            dd.onstop = () => {
+              let blob = URL.createObjectURL(ch[0]);
+              let _a = document.createElement("a");
+              _a.href = blob;
+              _a.download = "FILE.webm";
+              _a.click();
+              //window.open(blob);
+            };
+
+            dd.start();
+            v.paly();
+          })
+          .catch(function (err) {
+            /* handle the error */
+          });
+      };
+    </script>
+  </body>
+</html>
